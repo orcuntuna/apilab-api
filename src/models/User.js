@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator')
 
-const schema = new mognoose.Schema({
+const schema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'İsim zorunludur.'],
@@ -52,4 +53,5 @@ const schema = new mognoose.Schema({
   },
 })
 
+schema.plugin(uniqueValidator, { message: 'Bu {PATH} zaten mevcut.' })
 module.exports = mongoose.model('User', schema)
