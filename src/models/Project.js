@@ -32,9 +32,6 @@ const schema = new mognoose.Schema({
   },
   categories: [
     {
-      _id: {
-        type: ObjectId,
-      },
       name: {
         type: String,
         required: [true, 'Kategori ismi zorunludur.'],
@@ -48,9 +45,6 @@ const schema = new mognoose.Schema({
       },
       apis: [
         {
-          _id: {
-            type: ObjectId,
-          },
           order: {
             type: Number,
             default: 0,
@@ -75,7 +69,6 @@ const schema = new mognoose.Schema({
                 'PUT',
                 'DELETE',
                 'HEAD',
-                ' HEAD',
                 'CONNECT',
                 'OPTIONS',
                 'TRACE',
