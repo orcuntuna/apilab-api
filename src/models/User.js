@@ -37,8 +37,6 @@ const schema = new mognoose.Schema({
   password: {
     type: String,
     required: [true, 'Parola zorunludur.'],
-    minlength: [3, 'Parola en az 8 karakter olabilir.'],
-    maxlength: [64, 'Parola en fazla 64 karakter olabilir.'],
   },
   token: {
     type: String,
