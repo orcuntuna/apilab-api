@@ -1,0 +1,30 @@
+{
+  "name": "apilab",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2",
+    "prettier": "^2.0.2"
+  },
+  "prettier": {
+    "useTabs": false,
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true,
+    "bracketSpacing": true,
+    "trailingComma": "all",
+    "jsxBracketSameLine": false
+  }
+}
