@@ -192,19 +192,56 @@ router.post('/:projectId/categories/add', authMiddleware, (req, res) => {
     },
     { runValidators: true, context: 'query', new: true },
     (err, updated_data) => {
-      if(err){
+      if (err) {
         res.json({
           success: false,
-          error: err
+          error: err,
         })
-      }else{
+      } else {
         res.json({
           success: true,
-          data: updated_data
+          data: updated_data,
         })
       }
     },
   )
 })
+
+router.post(
+  '/:projectId/categories/update/:categoryId',
+  authMiddleware,
+  (req, res) => {
+    const logged_in_user = req.next.user
+    const project_id = req.params.projectId
+    const category_id = req.params.categoryId
+    ProjectModel.findOneAndUpdate(
+      {
+        _id: project_id,
+        owner: logged_in_user._id,
+        'categories._id': category_id,
+      },
+      {
+        $set: {
+          'categories.$.name': req.body.name,
+          'categories.$.order': req.body.order,
+        },
+      },
+      { runValidators: true, context: 'query', new: true },
+      (err, updated_data) => {
+        if (err) {
+          res.json({
+            success: false,
+            error: err,
+          })
+        } else {
+          res.json({
+            success: true,
+            data: updated_data,
+          })
+        }
+      },
+    )
+  },
+)
 
 module.exports = router
