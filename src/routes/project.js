@@ -108,4 +108,40 @@ router.post('/delete/:projectId', authMiddleware, (req, res) => {
   )
 })
 
+router.post('/update/:projectId', authMiddleware, (req, res) => {
+  const logged_in_user = req.next.user
+  const project_id = req.params.projectId
+  if (req.body.type === 'private' && logged_in_user.rank !== 'premium') {
+    res.json({
+      success: false,
+      error: 'Projeyi private yapmak için premium üyelik gereklidir.',
+    })
+  } else {
+    ProjectModel.findOneAndUpdate(
+      {
+        _id: project_id,
+        owner: logged_in_user._id,
+      },
+      {
+        name: req.body.name,
+        type: req.body.type,
+        description: req.body.description,
+      },
+      { runValidators: true, context: 'query' },
+      (err, data) => {
+        if (err) {
+          res.json({
+            success: false,
+            error: err,
+          })
+        } else {
+          res.json({
+            success: true,
+          })
+        }
+      },
+    )
+  }
+})
+
 module.exports = router

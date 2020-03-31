@@ -11,7 +11,7 @@ const schema = new mongoose.Schema({
   surname: {
     type: String,
     required: [true, 'İsim zorunludur.'],
-    minlength: [3, 'İsim en az 3 karakter olabilir.'],
+    minlength: [2, 'İsim en az 2 karakter olabilir.'],
     maxlength: [32, 'İsim en fazla 32 karakter olabilir.'],
   },
   email: {
@@ -31,7 +31,7 @@ const schema = new mongoose.Schema({
     minlength: [3, 'Kullanıcı adı en az 3 karakter olabilir.'],
     maxlength: [32, 'Kullanıcı adı en fazla 32 karakter olabilir.'],
     match: [
-      /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/,
+      /^[a-z0-9_-]{3,32}$/,
       'Kullanıcı adı geçerli değil.',
     ],
   },

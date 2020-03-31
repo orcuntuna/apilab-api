@@ -18,6 +18,7 @@ app.listen(8000, () => {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
+    useFindAndModify: false,
   })
   console.log('server started')
 })
