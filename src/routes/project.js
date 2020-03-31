@@ -85,4 +85,27 @@ router.post('/add', authMiddleware, (req, res) => {
   }
 })
 
+router.post('/delete/:projectId', authMiddleware, (req, res) => {
+  const logged_in_user = req.next.user
+  const project_id = req.params.projectId
+  ProjectModel.findOneAndDelete(
+    {
+      _id: project_id,
+      owner: logged_in_user._id,
+    },
+    (err) => {
+      if (err) {
+        res.json({
+          success: false,
+          error: 'Proje silinemedi.',
+        })
+      } else {
+        res.json({
+          success: true,
+        })
+      }
+    },
+  )
+})
+
 module.exports = router
