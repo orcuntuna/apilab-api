@@ -207,4 +207,4 @@ const schema = new mongoose.Schema({
   ],
 })
 
-module.exports = mongoose.model('Model', schema)
+module.exports = mongoose.model('Project', schema)

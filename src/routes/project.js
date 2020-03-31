@@ -40,4 +40,49 @@ router.get('/list', authMiddleware, (req, res) => {
   )
 })
 
+router.post('/add', authMiddleware, (req, res) => {
+  const logged_in_user = req.next.user
+  const new_project = new ProjectModel({
+    owner: logged_in_user._id,
+    name: req.body.name,
+    type: req.body.type,
+    description: req.body.description,
+  })
+  if (
+    req.body.type === 'public' ||
+    (req.body.type === 'private' && logged_in_user.rank === 'premium')
+  ) {
+    new_project.save((err, data) => {
+      if (err) {
+        res.json({
+          success: false,
+          error: err,
+        })
+      } else {
+        res.json({
+          success: true,
+          data: data,
+        })
+      }
+    })
+  } else {
+    let err_msg = ''
+    if (req.body.type === 'public' || req.body.type === 'private') {
+      err_msg = 'Private proje oluşturmak için premium üye olmalısınız.'
+    } else {
+      err_msg = 'Proje tipi sadece public veya private olabilir.'
+    }
+    res.json({
+      success: false,
+      error: {
+        errors: {
+          type: {
+            message: err_msg,
+          },
+        },
+      },
+    })
+  }
+})
+
 module.exports = router

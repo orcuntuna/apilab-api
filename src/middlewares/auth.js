@@ -6,8 +6,8 @@ const userModel = require('../models/User')
 const verifyToken = (req, res, next) => {
   const token = req.headers['authorization']
   if (typeof token !== 'undefined') {
-    userModel.findOne({ token }, (err, data) => {
-      if (err || !data) {
+    userModel.findOne({ token }, (err, user_data) => {
+      if (err || !user_data) {
         res.status(403)
         res.json({
           success: false,
@@ -22,7 +22,7 @@ const verifyToken = (req, res, next) => {
               error: 'Erişim reddedildi 2',
             })
           } else {
-            req.next = decoded
+            req.next.user = user_data
             return next()
           }
         })
