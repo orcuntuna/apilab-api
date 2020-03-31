@@ -144,4 +144,67 @@ router.post('/update/:projectId', authMiddleware, (req, res) => {
   }
 })
 
+router.get('/:projectId', authMiddleware, (req, res) => {
+  const logged_in_user = req.next.user
+  const project_id = req.params.projectId
+  ProjectModel.findOne(
+    {
+      _id: project_id,
+      owner: logged_in_user._id,
+    },
+    (err, project_data) => {
+      if (err) {
+        res.json({
+          success: false,
+          error: err,
+        })
+      } else {
+        if (!project_data) {
+          res.json({
+            success: false,
+            error: 'Proje bulunamadı.',
+          })
+        } else {
+          res.json({
+            success: true,
+            data: project_data,
+          })
+        }
+      }
+    },
+  )
+})
+
+router.post('/:projectId/categories/add', authMiddleware, (req, res) => {
+  const logged_in_user = req.next.user
+  const project_id = req.params.projectId
+  ProjectModel.findOneAndUpdate(
+    {
+      _id: project_id,
+      owner: logged_in_user._id,
+    },
+    {
+      $push: {
+        categories: {
+          name: req.body.name,
+        },
+      },
+    },
+    { runValidators: true, context: 'query', new: true },
+    (err, updated_data) => {
+      if(err){
+        res.json({
+          success: false,
+          error: err
+        })
+      }else{
+        res.json({
+          success: true,
+          data: updated_data
+        })
+      }
+    },
+  )
+})
+
 module.exports = router
