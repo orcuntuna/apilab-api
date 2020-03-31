@@ -6,9 +6,6 @@ const router = express.Router()
 const UserModel = require('../models/User')
 
 router.post('/register', (req, res) => {
-  console.log(
-    sha256(req.body.password + process.env.PASSWORD_HASH_KEY).toString(),
-  )
   const user = new UserModel({
     name: req.body.name,
     surname: req.body.surname,

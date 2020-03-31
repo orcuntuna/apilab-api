@@ -4,14 +4,14 @@ require('dotenv/config')
 const userModel = require('../models/User')
 
 const verifyToken = (req, res, next) => {
-  const token = req.headers['auth_token']
+  const token = req.headers['authorization']
   if (typeof token !== 'undefined') {
     userModel.findOne({ token }, (err, data) => {
       if (err || !data) {
         res.status(403)
         res.json({
           success: false,
-          error: 'Erişim reddedildi',
+          error: 'Erişim reddedildi 3',
         })
       } else {
         jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
@@ -19,7 +19,7 @@ const verifyToken = (req, res, next) => {
             res.status(403)
             res.json({
               success: false,
-              error: 'Erişim reddedildi',
+              error: 'Erişim reddedildi 2',
             })
           } else {
             req.next = decoded
@@ -32,7 +32,9 @@ const verifyToken = (req, res, next) => {
     res.status(403)
     res.json({
       success: false,
-      error: 'Erişim reddedildi',
+      error: 'Erişim reddedildi 1',
     })
   }
 }
+
+module.exports = verifyToken

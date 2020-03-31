@@ -8,8 +8,10 @@ app.use(express.static('public'))
 app.use(bodyParser.json())
 
 const userRouter = require('./src/routes/user')
+const projectRouter = require('./src/routes/project')
 
 app.use('/api/user', userRouter)
+app.use('/api/project', projectRouter)
 
 app.listen(8000, () => {
   mongoose.connect(process.env.MONGODB_CONNECT, {
