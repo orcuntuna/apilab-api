@@ -88,4 +88,28 @@ router.post('/:categoryId/update/:apiId', authMiddleware, (req, res) => {
   )
 })
 
+router.post('/:categoryId/delete/:apiId', authMiddleware, (req, res) => {
+  const logged_in_user = req.next.user
+  const category_id = req.params.categoryId
+  const api_id = req.params.apiId
+  ApiModel.findOneAndDelete(
+    {
+      owner: logged_in_user,
+      _id: api_id,
+    },
+    (err) => {
+      if (err) {
+        res.json({
+          success: false,
+          error: err,
+        })
+      } else {
+        res.json({
+          success: true,
+        })
+      }
+    },
+  )
+})
+
 module.exports = router
