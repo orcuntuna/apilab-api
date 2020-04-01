@@ -1,7 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
-const sha256 = require('crypto-js/sha256')
 require('dotenv/config')
 const router = express.Router()
 const ProjectModel = require('../models/Project')
@@ -200,7 +199,7 @@ router.post('/:projectId/categories/add', authMiddleware, (req, res) => {
       } else {
         res.json({
           success: true,
-          data: updated_data,
+          data: updated_data.categories,
         })
       }
     },
@@ -236,7 +235,7 @@ router.post(
         } else {
           res.json({
             success: true,
-            data: updated_data,
+            data: updated_data.categories,
           })
         }
       },
@@ -268,12 +267,18 @@ router.post(
         } else {
           res.json({
             success: true,
-            data: updated_data,
+            data: updated_data.categories,
           })
         }
       },
     )
   },
 )
+
+router.post('/:projectId/apis/add', authMiddleware, (req, res) => {
+  const logged_in_user = req.next.user
+  const project_id = req.params.projectId
+  const category_id = req.params.categoryIds
+})
 
 module.exports = router
