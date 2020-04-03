@@ -126,7 +126,10 @@ router.post('/update/:projectId', authMiddleware, (req, res) => {
         type: req.body.type,
         description: req.body.description,
       },
-      { runValidators: true, context: 'query' },
+      {
+        runValidators: true,
+        context: 'query',
+      },
       (err, data) => {
         if (err) {
           res.json({
@@ -189,7 +192,11 @@ router.post('/:projectId/categories/add', authMiddleware, (req, res) => {
         },
       },
     },
-    { runValidators: true, context: 'query', new: true },
+    {
+      runValidators: true,
+      context: 'query',
+      new: true,
+    },
     (err, updated_data) => {
       if (err) {
         res.json({
@@ -225,7 +232,11 @@ router.post(
           'categories.$.order': req.body.order,
         },
       },
-      { runValidators: true, context: 'query', new: true },
+      {
+        runValidators: true,
+        context: 'query',
+        new: true,
+      },
       (err, updated_data) => {
         if (err) {
           res.json({
@@ -256,8 +267,18 @@ router.post(
         owner: logged_in_user._id,
         'categories._id': category_id,
       },
-      { $pull: { categories: { _id: category_id } } },
-      { runValidators: true, context: 'query', new: true },
+      {
+        $pull: {
+          categories: {
+            _id: category_id,
+          },
+        },
+      },
+      {
+        runValidators: true,
+        context: 'query',
+        new: true,
+      },
       (err, updated_data) => {
         if (err) {
           res.json({
