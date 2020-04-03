@@ -132,6 +132,7 @@ const schema = new mongoose.Schema({
       },
     },
   ],
+  /*
   calls: [
     {
       language: {
@@ -156,6 +157,7 @@ const schema = new mongoose.Schema({
       },
     },
   ],
+  */
   notes: [
     {
       type: {

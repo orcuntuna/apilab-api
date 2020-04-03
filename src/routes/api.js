@@ -217,7 +217,7 @@ router.post(
           })
         } else {
           res.json({
-            success: true
+            success: true,
           })
         }
       },
@@ -332,7 +332,7 @@ router.post(
           })
         } else {
           res.json({
-            success: true
+            success: true,
           })
         }
       },
@@ -447,7 +447,7 @@ router.post(
           })
         } else {
           res.json({
-            success: true
+            success: true,
           })
         }
       },
@@ -564,12 +564,117 @@ router.post(
           })
         } else {
           res.json({
-            success: true
+            success: true,
           })
         }
       },
     )
   },
 )
+
+router.post('/:apiId/notes/add', authMiddleware, (req, res) => {
+  const logged_in_user = req.next.user
+  const api_id = req.params.apiId
+  ApiModel.findOneAndUpdate(
+    {
+      _id: api_id,
+      owner: logged_in_user._id,
+    },
+    {
+      $push: {
+        notes: {
+          type: req.body.type,
+          content: req.body.content,
+        },
+      },
+    },
+    {
+      runValidators: true,
+      context: 'query',
+      new: true,
+    },
+    (err, updated_data) => {
+      if (err) {
+        res.json({
+          success: false,
+          error: err,
+        })
+      } else {
+        res.json({
+          success: true,
+          data: updated_data.notes,
+        })
+      }
+    },
+  )
+})
+
+router.post('/:apiId/notes/update/:noteId', authMiddleware, (req, res) => {
+  const logged_in_user = req.next.user
+  const api_id = req.params.apiId
+  const note_id = req.params.noteId
+  ApiModel.findOneAndUpdate(
+    {
+      _id: api_id,
+      owner: logged_in_user._id,
+      'notes._id': note_id,
+    },
+    {
+      $set: {
+        'notes.$.type': req.body.type,
+        'notes.$.content': req.body.content,
+      },
+    },
+    {
+      runValidators: true,
+      context: 'query',
+      new: true,
+    },
+    (err, updated_data) => {
+      if (err) {
+        res.json({
+          success: false,
+          error: err,
+        })
+      } else {
+        res.json({
+          success: true,
+          data: updated_data.notes,
+        })
+      }
+    },
+  )
+})
+
+router.post('/:apiId/notes/delete/:noteId', authMiddleware, (req, res) => {
+  const logged_in_user = req.next.user
+  const api_id = req.params.apiId
+  const note_id = req.params.noteId
+  ApiModel.findOneAndUpdate(
+    {
+      _id: api_id,
+      owner: logged_in_user._id,
+      'notes._id': note_id,
+    },
+    {
+      $pull: {
+        notes: {
+          _id: note_id,
+        },
+      },
+    },
+    (err) => {
+      if (err) {
+        res.json({
+          success: false,
+        })
+      } else {
+        res.json({
+          success: true,
+        })
+      }
+    },
+  )
+})
 
 module.exports = router
