@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 require('dotenv/config')
 const router = express.Router()
 const ProjectModel = require('../models/Project')
+const ApiModel = require('../models/Api')
 const authMiddleware = require('../middlewares/auth')
 
 router.get('/list', authMiddleware, (req, res) => {
@@ -175,131 +176,6 @@ router.get('/:projectId', authMiddleware, (req, res) => {
       }
     },
   )
-})
-
-router.post('/:projectId/categories/add', authMiddleware, (req, res) => {
-  const logged_in_user = req.next.user
-  const project_id = req.params.projectId
-  ProjectModel.findOneAndUpdate(
-    {
-      _id: project_id,
-      owner: logged_in_user._id,
-    },
-    {
-      $push: {
-        categories: {
-          name: req.body.name,
-        },
-      },
-    },
-    {
-      runValidators: true,
-      context: 'query',
-      new: true,
-    },
-    (err, updated_data) => {
-      if (err) {
-        res.json({
-          success: false,
-          error: err,
-        })
-      } else {
-        res.json({
-          success: true,
-          data: updated_data.categories,
-        })
-      }
-    },
-  )
-})
-
-router.post(
-  '/:projectId/categories/update/:categoryId',
-  authMiddleware,
-  (req, res) => {
-    const logged_in_user = req.next.user
-    const project_id = req.params.projectId
-    const category_id = req.params.categoryId
-    ProjectModel.findOneAndUpdate(
-      {
-        _id: project_id,
-        owner: logged_in_user._id,
-        'categories._id': category_id,
-      },
-      {
-        $set: {
-          'categories.$.name': req.body.name,
-          'categories.$.order': req.body.order,
-        },
-      },
-      {
-        runValidators: true,
-        context: 'query',
-        new: true,
-      },
-      (err, updated_data) => {
-        if (err) {
-          res.json({
-            success: false,
-            error: err,
-          })
-        } else {
-          res.json({
-            success: true,
-            data: updated_data.categories,
-          })
-        }
-      },
-    )
-  },
-)
-
-router.post(
-  '/:projectId/categories/delete/:categoryId',
-  authMiddleware,
-  (req, res) => {
-    const logged_in_user = req.next.user
-    const project_id = req.params.projectId
-    const category_id = req.params.categoryId
-    ProjectModel.findOneAndUpdate(
-      {
-        _id: project_id,
-        owner: logged_in_user._id,
-        'categories._id': category_id,
-      },
-      {
-        $pull: {
-          categories: {
-            _id: category_id,
-          },
-        },
-      },
-      {
-        runValidators: true,
-        context: 'query',
-        new: true,
-      },
-      (err, updated_data) => {
-        if (err) {
-          res.json({
-            success: false,
-            error: err,
-          })
-        } else {
-          res.json({
-            success: true,
-            data: updated_data.categories,
-          })
-        }
-      },
-    )
-  },
-)
-
-router.post('/:projectId/apis/add', authMiddleware, (req, res) => {
-  const logged_in_user = req.next.user
-  const project_id = req.params.projectId
-  const category_id = req.params.categoryIds
 })
 
 module.exports = router

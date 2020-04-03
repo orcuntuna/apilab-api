@@ -4,6 +4,7 @@ require('dotenv/config')
 const router = express.Router()
 const ProjectModel = require('../models/Project')
 const ApiModel = require('../models/Api')
+const CategoryModel = require('../models/Category')
 const authMiddleware = require('../middlewares/auth')
 
 router.post('/:categoryId/add', authMiddleware, (req, res) => {
@@ -12,7 +13,7 @@ router.post('/:categoryId/add', authMiddleware, (req, res) => {
   ProjectModel.findOne(
     {
       owner: logged_in_user._id,
-      'categories._id': category_id,
+      'categories_id': category_id,
     },
     (err, project_data) => {
       if (err) {
@@ -43,10 +44,37 @@ router.post('/:categoryId/add', authMiddleware, (req, res) => {
                 error: err,
               })
             } else {
-              res.json({
-                success: true,
-                data: api_data,
-              })
+              CategoryModel.findOneAndUpdate(
+                {
+                  _id: category_id,
+                  owner: logged_in_user._id,
+                },
+                {
+                  $push: {
+                    apis_id: mongoose.Types.ObjectId(
+                      api_data._id,
+                    ),
+                  },
+                },
+                {
+                  runValidators: true,
+                  context: 'query',
+                  new: true,
+                },
+                (err, data) => {
+                  if (err) {
+                    res.json({
+                      success: false,
+                      error: err,
+                    })
+                  } else {
+                    res.json({
+                      success: true,
+                      data: api_data,
+                    })
+                  }
+                },
+              )
             }
           })
         }
@@ -95,16 +123,35 @@ router.post('/delete/:apiId', authMiddleware, (req, res) => {
       owner: logged_in_user,
       _id: api_id,
     },
-    (err) => {
+    (err, api_data) => {
       if (err) {
         res.json({
           success: false,
           error: err,
         })
       } else {
-        res.json({
-          success: true,
-        })
+        CategoryModel.findOneAndUpdate(
+          {
+            _id: api_data.category_id,
+            owner: logged_in_user._id,
+          },
+          {
+            $pull: {
+              apis_id: mongoose.Types.ObjectId(api_data._id),
+            },
+          },
+          (err) => {
+            if (err) {
+              res.json({
+                success: false,
+              })
+            } else {
+              res.json({
+                success: true,
+              })
+            }
+          },
+        )
       }
     },
   )
