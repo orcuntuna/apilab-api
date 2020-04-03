@@ -455,5 +455,121 @@ router.post(
   },
 )
 
+router.post('/:apiId/responses/add', authMiddleware, (req, res) => {
+  const logged_in_user = req.next.user
+  const api_id = req.params.apiId
+  ApiModel.findOneAndUpdate(
+    {
+      _id: api_id,
+      owner: logged_in_user._id,
+    },
+    {
+      $push: {
+        responses: {
+          name: req.body.name,
+          description: req.body.description,
+          code: req.body.code,
+          content: req.body.content,
+        },
+      },
+    },
+    {
+      runValidators: true,
+      context: 'query',
+      new: true,
+    },
+    (err, updated_data) => {
+      if (err) {
+        res.json({
+          success: false,
+          error: err,
+        })
+      } else {
+        res.json({
+          success: true,
+          data: updated_data.responses,
+        })
+      }
+    },
+  )
+})
+
+router.post(
+  '/:apiId/responses/update/:responseId',
+  authMiddleware,
+  (req, res) => {
+    const logged_in_user = req.next.user
+    const api_id = req.params.apiId
+    const response_id = req.params.responseId
+    ApiModel.findOneAndUpdate(
+      {
+        _id: api_id,
+        owner: logged_in_user._id,
+        'responses._id': response_id,
+      },
+      {
+        $set: {
+          'responses.$.name': req.body.name,
+          'responses.$.description': req.body.description,
+          'responses.$.code': req.body.code,
+          'responses.$.content': req.body.content,
+        },
+      },
+      {
+        runValidators: true,
+        context: 'query',
+        new: true,
+      },
+      (err, updated_data) => {
+        if (err) {
+          res.json({
+            success: false,
+            error: err,
+          })
+        } else {
+          res.json({
+            success: true,
+            data: updated_data.responses,
+          })
+        }
+      },
+    )
+  },
+)
+
+router.post(
+  '/:apiId/responses/delete/:responseId',
+  authMiddleware,
+  (req, res) => {
+    const logged_in_user = req.next.user
+    const api_id = req.params.apiId
+    const response_id = req.params.responseId
+    ApiModel.findOneAndUpdate(
+      {
+        _id: api_id,
+        owner: logged_in_user._id,
+        'responses._id': response_id,
+      },
+      {
+        $pull: {
+          responses: {
+            _id: response_id,
+          },
+        },
+      },
+      (err) => {
+        if (err) {
+          res.json({
+            success: false,
+          })
+        } else {
+          res.json({
+            success: true
+          })
+        }
+      },
+    )
+  },
+)
 
 module.exports = router

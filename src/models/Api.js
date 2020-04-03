@@ -122,11 +122,8 @@ const schema = new mongoose.Schema({
       description: {
         type: String,
       },
-      language: {
-        type: String,
-      },
       code: {
-        type: [Number, 'Response kodu sayı olmalıdır.'],
+        type: Number,
         required: [true, 'Response kodu zorunludur.'],
         default: 200,
       },
